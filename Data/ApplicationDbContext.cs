@@ -10,5 +10,10 @@ namespace EmpMgmtSys.Data
         {
 
         }
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<Designation> Designations { get; set; }
+        public DbSet<Leave> Leaves { get; set; }
+        public DbSet<Vacancy> Vacancies { get; set; }
     }
 }
