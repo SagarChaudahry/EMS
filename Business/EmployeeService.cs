@@ -1,33 +1,30 @@
 ﻿using EmpMgmtSys.Data;
-using System.ComponentModel.DataAnnotations;
+using EmpMgmtSys.Data.Entities;
+using EmpMgmtSys.Models.Employee;
+using Mapster;
 
 namespace EmpMgmtSys.Business
 {
-    public class EmployeeService: IEmployeeService
+    public class EmployeeService : IEmployeeService
     {
-        private readonly IEmployeeService _employeeService;
         private readonly ApplicationDbContext _dbContext;
-        public EmployeeService(IEmployeeService employeeService,
-            ApplicationDbContext dbContext)
+        public EmployeeService(ApplicationDbContext dbContext)
         {
-            _employeeService = employeeService;
             _dbContext = dbContext;
         }
-        public class EmployeeDTO
+        public async Task<string> CreateEmployeeAsync(EmployeeDTO model)
         {
-            [Required]
-            public string FullName { get; set; }
-        }
-        public class Employee
-        {
-            [Required]
-            public string FullName { get; set; }
-        }
-        public Task<string> CreateEmployeeAsync(EmployeeDTO model)
-        {
-            var customer = new Employee()
+            try
             {
-                FullName=model.FullName
+                var employee = model.Adapt<Employee>();
+                await _dbContext.Employees.AddAsync(employee);
+                await _dbContext.SaveChangesAsync();
+                return ("Employee created Successfully");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Something went wrong while creating Employee. Exception:{Exception}", ex);
+                throw;
             }
         }
     }
